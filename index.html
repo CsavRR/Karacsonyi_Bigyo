@@ -1,0 +1,1142 @@
+<!doctype html>
+<html lang="hu">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MerriSziszter! 🌲❄️</title>
+    <!-- Bootstrap 5.3 CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    />
+    <!-- Betűtípusok (Cinzel a visszaszámlálóhoz, Poppins a többi szöveghez) -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Poppins:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --snow-bg-top: #f4f9fb;
+        --snow-bg-bottom: #e2eff5;
+        --pine-dark: #1f4e46;
+        --pine-medium: #367569;
+        --ice-border: #cde2eb;
+        --ice-accent: #5c9ead;
+        --card-white: #ffffff;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        background: linear-gradient(
+          180deg,
+          var(--snow-bg-top) 0%,
+          var(--snow-bg-bottom) 100%
+        );
+        color: #2b3e42;
+        min-height: 100vh;
+        overflow-x: hidden;
+        position: relative;
+      }
+
+      /* Világos, havas fejléc */
+      .xmas-header {
+        background: linear-gradient(135deg, #ffffff 0%, #e9f4f8 100%);
+        border-bottom: 3px solid var(--ice-border);
+        box-shadow: 0 4px 20px rgba(92, 158, 173, 0.12);
+        padding: 2.2rem 1rem;
+        text-align: center;
+        position: relative;
+        z-index: 2;
+      }
+
+      /* Visszaszámláló (#demo) új betűtípussal */
+      .xmas-title {
+        font-family: "Cinzel", serif;
+        font-weight: 700;
+        font-size: 3rem;
+        letter-spacing: 1.5px;
+        font-variant-numeric: tabular-nums;
+        color: var(--pine-dark);
+        text-shadow: 1px 2px 8px rgba(92, 158, 173, 0.25);
+        margin: 0 0 0.4rem 0;
+      }
+
+      .xmas-subtitle {
+        color: var(--pine-medium);
+        font-weight: 400;
+        letter-spacing: 0.5px;
+      }
+
+      /* Lebegő kattintható kosár gomb */
+      .cart-badge {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: var(--card-white);
+        color: var(--pine-dark);
+        font-weight: 600;
+        padding: 10px 20px;
+        border-radius: 50px;
+        box-shadow: 0 4px 15px rgba(31, 78, 70, 0.18);
+        z-index: 1000;
+        border: 2px solid var(--ice-border);
+        cursor: pointer;
+        transition: all 0.25s ease;
+      }
+
+      .cart-badge:hover {
+        background: var(--pine-dark);
+        color: #ffffff;
+        border-color: var(--pine-dark);
+        transform: translateY(-2px);
+      }
+
+      /* Világos, légies termékkártyák */
+      .xmas-card {
+        background-color: var(--card-white);
+        border: 1.5px solid var(--ice-border);
+        border-radius: 18px;
+        overflow: hidden;
+        transition:
+          transform 0.3s ease,
+          box-shadow 0.3s ease,
+          border-color 0.3s ease;
+        box-shadow: 0 6px 18px rgba(92, 158, 173, 0.12);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+      }
+
+      .xmas-card:not(.out-of-stock):hover {
+        transform: translateY(-6px);
+        border-color: var(--ice-accent);
+        box-shadow: 0 12px 26px rgba(92, 158, 173, 0.25);
+      }
+
+      .card-img-wrapper {
+        background: radial-gradient(
+          circle at center,
+          #ffffff 15%,
+          #e3f1f6 100%
+        );
+        height: 180px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-bottom: 1px solid #eef6f8;
+        position: relative;
+        overflow: hidden;
+        padding: 1rem;
+      }
+
+      .card-img-wrapper svg {
+        width: 120px;
+        height: 120px;
+        filter: drop-shadow(0 6px 10px rgba(31, 78, 70, 0.12));
+        transition: transform 0.35s ease;
+      }
+
+      .xmas-card:not(.out-of-stock):hover .card-img-wrapper svg {
+        transform: scale(1.08) translateY(-2px);
+      }
+
+      .xmas-card-body {
+        padding: 1.25rem;
+        text-align: center;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .product-title {
+        font-weight: 600;
+        font-size: 1.15rem;
+        color: var(--pine-dark);
+        margin-bottom: 0.25rem;
+      }
+
+      .product-desc {
+        font-size: 0.85rem;
+        color: #647b80;
+        margin-bottom: 0.75rem;
+      }
+
+      .product-price {
+        color: var(--ice-accent);
+        font-weight: 600;
+        font-size: 1.15rem;
+        margin-bottom: 1rem;
+      }
+
+      /* Lágy fenyőzöld gomb */
+      .btn-xmas {
+        background: linear-gradient(
+          135deg,
+          var(--pine-medium),
+          var(--pine-dark)
+        );
+        color: #ffffff;
+        border: none;
+        border-radius: 50px;
+        padding: 0.55rem 1.25rem;
+        font-weight: 600;
+        transition: all 0.2s ease;
+        box-shadow: 0 3px 10px rgba(31, 78, 70, 0.2);
+      }
+
+      .btn-xmas:hover:not(:disabled) {
+        background: linear-gradient(135deg, var(--ice-accent), #438291);
+        color: #ffffff;
+        transform: scale(1.03);
+      }
+
+      /* Kifogyott termékek stílusa */
+      .xmas-card.out-of-stock {
+        background-color: #f8fafb;
+        border-color: #dce5e8;
+      }
+
+      .xmas-card.out-of-stock .card-img-wrapper svg {
+        opacity: 0.4;
+        filter: grayscale(80%);
+      }
+
+      .xmas-card.out-of-stock .product-title,
+      .xmas-card.out-of-stock .product-price {
+        color: #8b9ca1;
+      }
+
+      .stock-badge {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        background-color: rgba(100, 116, 139, 0.92);
+        color: #ffffff;
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 4px 12px;
+        border-radius: 50px;
+        letter-spacing: 0.3px;
+        z-index: 2;
+      }
+
+      .btn-xmas:disabled,
+      .btn-xmas.disabled {
+        background: #cbd5e1;
+        color: #64748b;
+        box-shadow: none;
+        cursor: not-allowed;
+        opacity: 1;
+      }
+
+      /* Kosár modal egyedi stílus */
+      .modal-content {
+        border-radius: 20px;
+        border: 2px solid var(--ice-border);
+        background-color: #fcfdfe;
+      }
+
+      .modal-header {
+        background: linear-gradient(135deg, #ffffff 0%, #ebf5f8 100%);
+        border-bottom: 1.5px solid var(--ice-border);
+        border-radius: 18px 18px 0 0;
+      }
+
+      .modal-title {
+        color: var(--pine-dark);
+        font-weight: 600;
+      }
+
+      .qty-btn {
+        width: 28px;
+        height: 28px;
+        padding: 0;
+        border-radius: 50%;
+        border: 1px solid var(--ice-border);
+        background: #ffffff;
+        color: var(--pine-dark);
+        font-weight: 600;
+        line-height: 1;
+      }
+
+      .qty-btn:hover {
+        background: var(--pine-medium);
+        color: #ffffff;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Kattintható kosár gomb -->
+    <button
+      type="button"
+      class="cart-badge"
+      data-bs-toggle="modal"
+      data-bs-target="#cartModal"
+    >
+      ❄️ Kosár: <span id="cart-count">0</span> db
+    </button>
+
+    <!-- Fejléc (a #demo-ba tölti az index.js a visszaszámlálást) -->
+    <header class="xmas-header">
+      <h1 id="demo" class="xmas-title">🌲 MerriSziszter! ❄️</h1>
+      <p class="mb-0 xmas-subtitle">
+        Oh máj gád, Merri Sziszter! Merri Sziszmösz!
+      </p>
+    </header>
+
+    <!-- Termékek rácsa -->
+    <div class="container py-5 position-relative" style="z-index: 2">
+      <div class="row g-4">
+        <!-- 1. kártya: Klasszikus Fa Szánkó -->
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <div class="xmas-card">
+            <div class="card-img-wrapper">
+              <svg
+                viewBox="0 0 120 120"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M18 85 C10 85, 8 72, 16 70"
+                  stroke="#7c8b95"
+                  stroke-width="4"
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M18 85 L104 85"
+                  stroke="#7c8b95"
+                  stroke-width="4"
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M35 85 L35 66 M62 85 L62 66 M88 85 L88 66"
+                  stroke="#8d5b4c"
+                  stroke-width="5"
+                  stroke-linecap="round"
+                />
+                <rect
+                  x="24"
+                  y="60"
+                  width="76"
+                  height="8"
+                  rx="4"
+                  fill="#b87d56"
+                />
+                <rect
+                  x="28"
+                  y="52"
+                  width="68"
+                  height="6"
+                  rx="3"
+                  fill="#d49b72"
+                />
+                <path
+                  d="M16 70 Q8 60 22 55"
+                  stroke="#c84b4b"
+                  stroke-width="2.5"
+                  fill="none"
+                  stroke-dasharray="3 2"
+                />
+              </svg>
+            </div>
+            <div class="xmas-card-body">
+              <div>
+                <p class="product-title">Klasszikus Fa Szánkó</p>
+                <p class="product-desc">
+                  Bükkfából készült, vasalt talpú szánkó
+                </p>
+                <p class="product-price" data-price="19990">19 990 Ft</p>
+              </div>
+              <button class="btn btn-xmas w-100 add-to-cart">🌲 Kosárba</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. kártya: Fenyőtobozos Ajtókopogtató -->
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <div class="xmas-card">
+            <div class="card-img-wrapper">
+              <svg
+                viewBox="0 0 120 120"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle
+                  cx="60"
+                  cy="62"
+                  r="34"
+                  stroke="#2d6a5e"
+                  stroke-width="14"
+                />
+                <circle
+                  cx="60"
+                  cy="62"
+                  r="34"
+                  stroke="#458b7d"
+                  stroke-width="8"
+                  stroke-dasharray="10 8"
+                />
+                <circle cx="32" cy="48" r="4" fill="#d64545" />
+                <circle cx="88" cy="48" r="4" fill="#d64545" />
+                <circle cx="38" cy="86" r="4" fill="#d64545" />
+                <circle cx="82" cy="86" r="4" fill="#d64545" />
+                <path
+                  d="M60 28 L46 18 L52 32 Z M60 28 L74 18 L68 32 Z"
+                  fill="#d64545"
+                />
+                <circle cx="60" cy="28" r="4" fill="#b32d2d" />
+                <ellipse
+                  cx="42"
+                  cy="34"
+                  rx="5"
+                  ry="7"
+                  transform="rotate(-30 42 34)"
+                  fill="#8c5a3c"
+                />
+                <ellipse
+                  cx="78"
+                  cy="34"
+                  rx="5"
+                  ry="7"
+                  transform="rotate(30 78 34)"
+                  fill="#8c5a3c"
+                />
+              </svg>
+            </div>
+            <div class="xmas-card-body">
+              <div>
+                <p class="product-title">Fenyőtobozos Ajtókopogtató</p>
+                <p class="product-desc">Kézzel készített havas téli koszorú</p>
+                <p class="product-price" data-price="7490">7 490 Ft</p>
+              </div>
+              <button class="btn btn-xmas w-100 add-to-cart">🌲 Kosárba</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. kártya: Rénszarvasos Pulóver -->
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <div class="xmas-card">
+            <div class="card-img-wrapper">
+              <svg
+                viewBox="0 0 120 120"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M42 26 L78 26 L98 52 L88 62 L78 48 L78 94 L42 94 L42 48 L32 62 L22 52 Z"
+                  fill="#367569"
+                />
+                <rect
+                  x="46"
+                  y="22"
+                  width="28"
+                  height="7"
+                  rx="3.5"
+                  fill="#d64545"
+                />
+                <rect
+                  x="42"
+                  y="87"
+                  width="36"
+                  height="7"
+                  rx="2"
+                  fill="#d64545"
+                />
+                <circle cx="60" cy="58" r="10" fill="#b87d56" />
+                <circle cx="60" cy="61" r="3" fill="#d64545" />
+                <path
+                  d="M54 48 L50 38 M52 43 L47 42 M66 48 L70 38 M68 43 L73 42"
+                  stroke="#8c5a3c"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                />
+                <circle cx="56" cy="56" r="1.5" fill="#1f4e46" />
+                <circle cx="64" cy="56" r="1.5" fill="#1f4e46" />
+              </svg>
+            </div>
+            <div class="xmas-card-body">
+              <div>
+                <p class="product-title">Rénszarvasos Pulóver</p>
+                <p class="product-desc">Pihe-puha, kötött ünnepi pulcsi</p>
+                <p class="product-price" data-price="11990">11 990 Ft</p>
+              </div>
+              <button class="btn btn-xmas w-100 add-to-cart">🌲 Kosárba</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. kártya (KIFOGYOTT): Zenélő Hógömb -->
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <div class="xmas-card out-of-stock">
+            <div class="card-img-wrapper">
+              <span class="stock-badge">Elfogyott</span>
+              <svg
+                viewBox="0 0 120 120"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle
+                  cx="60"
+                  cy="54"
+                  r="34"
+                  fill="#d9eef5"
+                  stroke="#9ecae1"
+                  stroke-width="3"
+                />
+                <path
+                  d="M32 72 Q60 66 88 72 A34 34 0 0 1 32 72 Z"
+                  fill="#ffffff"
+                />
+                <polygon points="60,36 46,66 74,66" fill="#2d6a5e" />
+                <polygon points="60,28 50,50 70,50" fill="#367569" />
+                <circle cx="45" cy="42" r="2" fill="#ffffff" />
+                <circle cx="75" cy="46" r="2.5" fill="#ffffff" />
+                <circle cx="52" cy="54" r="1.5" fill="#ffffff" />
+                <path d="M36 84 L84 84 L90 98 L30 98 Z" fill="#8c5a3c" />
+                <rect
+                  x="42"
+                  y="88"
+                  width="36"
+                  height="5"
+                  rx="2.5"
+                  fill="#d4af37"
+                />
+              </svg>
+            </div>
+            <div class="xmas-card-body">
+              <div>
+                <p class="product-title">Zenélő Hógömb</p>
+                <p class="product-desc">Téli falucska hulló hópehellyel</p>
+                <p class="product-price" data-price="8500">8 500 Ft</p>
+              </div>
+              <button class="btn btn-xmas w-100" disabled>Kifogyott</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. kártya: Fából Faragott Diótörő -->
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <div class="xmas-card">
+            <div class="card-img-wrapper">
+              <svg
+                viewBox="0 0 120 120"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect
+                  x="46"
+                  y="16"
+                  width="28"
+                  height="22"
+                  rx="3"
+                  fill="#1f4e46"
+                />
+                <rect
+                  x="42"
+                  y="36"
+                  width="36"
+                  height="4"
+                  rx="2"
+                  fill="#d4af37"
+                />
+                <rect
+                  x="48"
+                  y="40"
+                  width="24"
+                  height="20"
+                  rx="4"
+                  fill="#f7d6bf"
+                />
+                <circle cx="55" cy="48" r="2" fill="#1f4e46" />
+                <circle cx="65" cy="48" r="2" fill="#1f4e46" />
+                <path
+                  d="M52 54 Q60 51 68 54"
+                  stroke="#ffffff"
+                  stroke-width="3"
+                  stroke-linecap="round"
+                />
+                <rect
+                  x="44"
+                  y="60"
+                  width="32"
+                  height="26"
+                  rx="4"
+                  fill="#d64545"
+                />
+                <path
+                  d="M48 66 L72 66 M48 74 L72 74"
+                  stroke="#d4af37"
+                  stroke-width="2.5"
+                />
+                <rect x="48" y="86" width="10" height="16" fill="#2b3e42" />
+                <rect x="62" y="86" width="10" height="16" fill="#2b3e42" />
+                <rect
+                  x="40"
+                  y="100"
+                  width="40"
+                  height="5"
+                  rx="2.5"
+                  fill="#8c5a3c"
+                />
+              </svg>
+            </div>
+            <div class="xmas-card-body">
+              <div>
+                <p class="product-title">Fából Faragott Diótörő</p>
+                <p class="product-desc">
+                  30 cm-es, kézzel festett katona figura
+                </p>
+                <p class="product-price" data-price="9990">9 990 Ft</p>
+              </div>
+              <button class="btn btn-xmas w-100 add-to-cart">🌲 Kosárba</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6. kártya: Fahéj-Narancs Illatgyertya -->
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <div class="xmas-card">
+            <div class="card-img-wrapper">
+              <svg
+                viewBox="0 0 120 120"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect
+                  x="40"
+                  y="48"
+                  width="40"
+                  height="50"
+                  rx="6"
+                  fill="#f9efe6"
+                  stroke="#d9c3b0"
+                  stroke-width="2"
+                />
+                <rect
+                  x="46"
+                  y="62"
+                  width="28"
+                  height="22"
+                  rx="3"
+                  fill="#e67e22"
+                  opacity="0.25"
+                />
+                <line
+                  x1="60"
+                  y1="48"
+                  x2="60"
+                  y2="39"
+                  stroke="#333"
+                  stroke-width="2.5"
+                />
+                <path
+                  d="M60 22 C67 30, 67 38, 60 40 C53 38, 53 30, 60 22 Z"
+                  fill="#f39c12"
+                />
+                <path
+                  d="M60 28 C63 32, 63 36, 60 38 C57 36, 57 32, 60 28 Z"
+                  fill="#fff3b0"
+                />
+                <circle cx="34" cy="92" r="8" fill="#e67e22" />
+                <rect
+                  x="78"
+                  y="88"
+                  width="16"
+                  height="5"
+                  rx="2"
+                  transform="rotate(-20 78 88)"
+                  fill="#8c5a3c"
+                />
+              </svg>
+            </div>
+            <div class="xmas-card-body">
+              <div>
+                <p class="product-title">Fahéj-Narancs Illatgyertya</p>
+                <p class="product-desc">45 órás égési idő, szójaviaszból</p>
+                <p class="product-price" data-price="4290">4 290 Ft</p>
+              </div>
+              <button class="btn btn-xmas w-100 add-to-cart">🌲 Kosárba</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 7. kártya: Kandallóra Akasztható Zokni -->
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <div class="xmas-card">
+            <div class="card-img-wrapper">
+              <svg
+                viewBox="0 0 120 120"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M46 32 L76 32 L76 74 C76 92, 42 98, 34 86 C28 76, 40 66, 46 66 Z"
+                  fill="#d64545"
+                />
+                <rect
+                  x="42"
+                  y="22"
+                  width="38"
+                  height="14"
+                  rx="6"
+                  fill="#ffffff"
+                  stroke="#cde2eb"
+                  stroke-width="2"
+                />
+                <path
+                  d="M76 22 Q86 14 82 28"
+                  stroke="#d4af37"
+                  stroke-width="3"
+                  fill="none"
+                />
+                <circle cx="60" cy="52" r="3" fill="#ffffff" opacity="0.8" />
+                <circle cx="52" cy="76" r="3" fill="#ffffff" opacity="0.8" />
+              </svg>
+            </div>
+            <div class="xmas-card-body">
+              <div>
+                <p class="product-title">Kandallóra Akasztható Zokni</p>
+                <p class="product-desc">Bársony ajándékzokni ezüst hímzéssel</p>
+                <p class="product-price" data-price="3490">3 490 Ft</p>
+              </div>
+              <button class="btn btn-xmas w-100 add-to-cart">🌲 Kosárba</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 8. kártya (KIFOGYOTT): Melegfényű LED Fényfüzér -->
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <div class="xmas-card out-of-stock">
+            <div class="card-img-wrapper">
+              <span class="stock-badge">Elfogyott</span>
+              <svg
+                viewBox="0 0 120 120"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M18 35 Q60 65 102 32"
+                  stroke="#367569"
+                  stroke-width="2.5"
+                  fill="none"
+                />
+                <path
+                  d="M18 75 Q60 45 102 78"
+                  stroke="#367569"
+                  stroke-width="2.5"
+                  fill="none"
+                />
+                <circle cx="34" cy="45" r="6" fill="#f1c40f" />
+                <circle cx="60" cy="50" r="6" fill="#f39c12" />
+                <circle cx="86" cy="42" r="6" fill="#f1c40f" />
+                <circle cx="38" cy="64" r="6" fill="#f39c12" />
+                <circle cx="62" cy="60" r="6" fill="#f1c40f" />
+                <circle cx="84" cy="68" r="6" fill="#f39c12" />
+              </svg>
+            </div>
+            <div class="xmas-card-body">
+              <div>
+                <p class="product-title">Melegfényű LED Fényfüzér</p>
+                <p class="product-desc">
+                  10 méteres rézdrótos füzér 100 LED-del
+                </p>
+                <p class="product-price" data-price="4990">4 990 Ft</p>
+              </div>
+              <button class="btn btn-xmas w-100" disabled>Kifogyott</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 9. kártya: Üveggömb Dísz Szett -->
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <div class="xmas-card">
+            <div class="card-img-wrapper">
+              <svg
+                viewBox="0 0 120 120"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <line
+                  x1="44"
+                  y1="15"
+                  x2="44"
+                  y2="34"
+                  stroke="#94a3b8"
+                  stroke-width="2"
+                />
+                <rect
+                  x="40"
+                  y="32"
+                  width="8"
+                  height="5"
+                  rx="1"
+                  fill="#d4af37"
+                />
+                <circle cx="44" cy="56" r="20" fill="#5c9ead" />
+                <path
+                  d="M26 56 Q44 64 62 56"
+                  stroke="#ffffff"
+                  stroke-width="2.5"
+                  fill="none"
+                />
+                <line
+                  x1="78"
+                  y1="15"
+                  x2="78"
+                  y2="46"
+                  stroke="#94a3b8"
+                  stroke-width="2"
+                />
+                <rect
+                  x="74"
+                  y="44"
+                  width="8"
+                  height="5"
+                  rx="1"
+                  fill="#d4af37"
+                />
+                <circle cx="78" cy="70" r="22" fill="#367569" />
+                <circle cx="72" cy="64" r="4" fill="#ffffff" opacity="0.5" />
+              </svg>
+            </div>
+            <div class="xmas-card-body">
+              <div>
+                <p class="product-title">Üveggömb Dísz Szett</p>
+                <p class="product-desc">
+                  12 darabos ezüst-jégkék karácsonyfadísz
+                </p>
+                <p class="product-price" data-price="7890">7 890 Ft</p>
+              </div>
+              <button class="btn btn-xmas w-100 add-to-cart">🌲 Kosárba</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 10. kártya: Kötött Sapka & Sál Szett -->
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <div class="xmas-card">
+            <div class="card-img-wrapper">
+              <svg
+                viewBox="0 0 120 120"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle
+                  cx="60"
+                  cy="22"
+                  r="8"
+                  fill="#ffffff"
+                  stroke="#cde2eb"
+                  stroke-width="2"
+                />
+                <path d="M36 56 C36 36, 84 36, 84 56 Z" fill="#5c9ead" />
+                <rect
+                  x="33"
+                  y="52"
+                  width="54"
+                  height="10"
+                  rx="5"
+                  fill="#ffffff"
+                  stroke="#cde2eb"
+                  stroke-width="2"
+                />
+                <rect
+                  x="38"
+                  y="68"
+                  width="44"
+                  height="12"
+                  rx="6"
+                  fill="#367569"
+                />
+                <rect
+                  x="44"
+                  y="76"
+                  width="13"
+                  height="24"
+                  rx="4"
+                  fill="#367569"
+                />
+                <rect
+                  x="63"
+                  y="76"
+                  width="13"
+                  height="20"
+                  rx="4"
+                  fill="#2d6a5e"
+                />
+              </svg>
+            </div>
+            <div class="xmas-card-body">
+              <div>
+                <p class="product-title">Kötött Sapka & Sál Szett</p>
+                <p class="product-desc">
+                  Hópehely mintás, polár béléses téli szett
+                </p>
+                <p class="product-price" data-price="6890">6 890 Ft</p>
+              </div>
+              <button class="btn btn-xmas w-100 add-to-cart">🌲 Kosárba</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 11. kártya (KIFOGYOTT): Plüss Rudolf Rénszarvas -->
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <div class="xmas-card out-of-stock">
+            <div class="card-img-wrapper">
+              <span class="stock-badge">Elfogyott</span>
+              <svg
+                viewBox="0 0 120 120"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M46 42 L36 22 M41 32 L32 30 M74 42 L84 22 M79 32 L88 30"
+                  stroke="#7c5238"
+                  stroke-width="4"
+                  stroke-linecap="round"
+                />
+                <ellipse
+                  cx="38"
+                  cy="46"
+                  rx="8"
+                  ry="5"
+                  transform="rotate(-20 38 46)"
+                  fill="#b87d56"
+                />
+                <ellipse
+                  cx="82"
+                  cy="46"
+                  rx="8"
+                  ry="5"
+                  transform="rotate(20 82 46)"
+                  fill="#b87d56"
+                />
+                <circle cx="60" cy="64" r="24" fill="#b87d56" />
+                <ellipse cx="60" cy="72" rx="14" ry="10" fill="#e6c3a5" />
+                <circle cx="51" cy="58" r="3" fill="#1f4e46" />
+                <circle cx="69" cy="58" r="3" fill="#1f4e46" />
+                <circle cx="60" cy="69" r="5.5" fill="#d64545" />
+              </svg>
+            </div>
+            <div class="xmas-card-body">
+              <div>
+                <p class="product-title">Plüss Rudolf Rénszarvas</p>
+                <p class="product-desc">Piros orrú, ölelnivaló téli kedvenc</p>
+                <p class="product-price" data-price="5490">5 490 Ft</p>
+              </div>
+              <button class="btn btn-xmas w-100" disabled>Kifogyott</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 12. kártya: Meglepetés Ajándékdoboz -->
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <div class="xmas-card">
+            <div class="card-img-wrapper">
+              <svg
+                viewBox="0 0 120 120"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect
+                  x="34"
+                  y="50"
+                  width="52"
+                  height="44"
+                  rx="5"
+                  fill="#367569"
+                />
+                <rect
+                  x="30"
+                  y="40"
+                  width="60"
+                  height="12"
+                  rx="4"
+                  fill="#458b7d"
+                />
+                <rect x="55" y="40" width="10" height="54" fill="#d64545" />
+                <path d="M60 40 C46 24, 34 36, 52 40 Z" fill="#d64545" />
+                <path d="M60 40 C74 24, 86 36, 68 40 Z" fill="#d64545" />
+              </svg>
+            </div>
+            <div class="xmas-card-body">
+              <div>
+                <p class="product-title">Meglepetés Ajándékdoboz</p>
+                <p class="product-desc">Ünnepi válogatás szalaggal átkötve</p>
+                <p class="product-price" data-price="12900">12 900 Ft</p>
+              </div>
+              <button class="btn btn-xmas w-100 add-to-cart">🌲 Kosárba</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Kosár felugró ablak (Modal) -->
+    <div
+      class="modal fade"
+      id="cartModal"
+      tabindex="-1"
+      aria-labelledby="cartModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="cartModalLabel">
+              ❄️ Az ünnepi kosarad
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Bezárás"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div id="cart-items-container">
+              <p class="text-center text-muted my-4">
+                A kosarad jelenleg üres. Válassz valami szépet!
+              </p>
+            </div>
+            <hr class="my-3" />
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="fw-semibold fs-5" style="color: var(--pine-dark)"
+                >Végösszeg:</span
+              >
+              <span
+                id="cart-total"
+                class="fw-bold fs-5"
+                style="color: var(--ice-accent)"
+                >0 Ft</span
+              >
+            </div>
+          </div>
+          <div class="modal-footer border-0 pt-0">
+            <button
+              type="button"
+              class="btn btn-outline-secondary rounded-pill"
+              id="clear-cart-btn"
+            >
+              Kiürítés
+            </button>
+            <button type="button" class="btn btn-xmas px-4" id="checkout-btn">
+              🎄 Megrendelés
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Saját külső JS fájlod (ide töltődik a visszaszámláló a #demo elembe) -->
+    <script src="index.js"></script>
+
+    <!-- Kosár működés -->
+    <script>
+      const cart = [];
+      const cartCountEl = document.getElementById("cart-count");
+      const cartItemsContainer = document.getElementById(
+        "cart-items-container",
+      );
+      const cartTotalEl = document.getElementById("cart-total");
+
+      function formatPrice(num) {
+        return num.toLocaleString("hu-HU") + " Ft";
+      }
+
+      function renderCart() {
+        const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+        cartCountEl.textContent = totalItems;
+
+        if (cart.length === 0) {
+          cartItemsContainer.innerHTML =
+            '<p class="text-center text-muted my-4">A kosarad jelenleg üres. Válassz valami szépet!</p>';
+          cartTotalEl.textContent = "0 Ft";
+          return;
+        }
+
+        let totalPrice = 0;
+        cartItemsContainer.innerHTML = cart
+          .map((item, index) => {
+            const itemSum = item.price * item.qty;
+            totalPrice += itemSum;
+            return `
+              <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                <div>
+                  <div class="fw-semibold" style="color: var(--pine-dark);">${item.title}</div>
+                  <small class="text-muted">${formatPrice(item.price)} / db</small>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  <button class="qty-btn" onclick="changeQty(${index}, -1)">-</button>
+                  <span class="fw-semibold px-1">${item.qty}</span>
+                  <button class="qty-btn" onclick="changeQty(${index}, 1)">+</button>
+                  <span class="fw-semibold ms-2" style="min-width: 85px; text-align: right; color: var(--ice-accent);">
+                    ${formatPrice(itemSum)}
+                  </span>
+                </div>
+              </div>
+            `;
+          })
+          .join("");
+
+        cartTotalEl.textContent = formatPrice(totalPrice);
+      }
+
+      window.changeQty = function (index, delta) {
+        cart[index].qty += delta;
+        if (cart[index].qty <= 0) {
+          cart.splice(index, 1);
+        }
+        renderCart();
+      };
+
+      document.querySelectorAll(".add-to-cart").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          if (btn.disabled) return;
+          const card = btn.closest(".xmas-card");
+          const title = card.querySelector(".product-title").textContent;
+          const price = parseInt(
+            card.querySelector(".product-price").dataset.price,
+            10,
+          );
+
+          const existing = cart.find((item) => item.title === title);
+          if (existing) {
+            existing.qty++;
+          } else {
+            cart.push({ title, price, qty: 1 });
+          }
+
+          renderCart();
+
+          const originalText = btn.innerHTML;
+          btn.innerHTML = "❄️ Hozzáadva!";
+          setTimeout(() => (btn.innerHTML = originalText), 900);
+        });
+      });
+
+      document
+        .getElementById("clear-cart-btn")
+        .addEventListener("click", () => {
+          cart.length = 0;
+          renderCart();
+        });
+
+      document.getElementById("checkout-btn").addEventListener("click", () => {
+        if (cart.length === 0) return;
+        cart.length = 0;
+        renderCart();
+        cartItemsContainer.innerHTML =
+          '<div class="alert alert-success text-center my-3 rounded-4">🎄 Köszönjük a rendelésed! Boldog ünnepeket kíván a MerriSziszter! ❄️</div>';
+      });
+    </script>
+  </body>
+</html>
